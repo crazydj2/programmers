@@ -177,40 +177,76 @@
 // }
 
 // 코딩테스트 연습 > 2019 카카오 개발자 겨울 인턴십 > 크레인 인형뽑기 게임
-function solution(board, moves) {
-    let count = 0;
+// function solution(board, moves) {
+//     let count = 0;
     
-    const reBoard = [];
+//     const reBoard = [];
     
-    // board 재배치 (행 기준이 아닌 열 기준으로)
-    board.map(arrRow => {
-        arrRow.map((row, index) => {
-            if (!reBoard[index]) {
-                reBoard[index] = [];
-            }
+//     // board 재배치 (행 기준이 아닌 열 기준으로)
+//     board.map(arrRow => {
+//         arrRow.map((row, index) => {
+//             if (!reBoard[index]) {
+//                 reBoard[index] = [];
+//             }
             
-            if (row) {
-                reBoard[index].push(row);
+//             if (row) {
+//                 reBoard[index].push(row);
+//             }
+//         });
+//     });
+    
+//     const greps = [];
+    
+//     moves.map(m => {
+//         if (reBoard[m - 1].length === 0) {
+//             return;
+//         }
+        
+//         const target = reBoard[m - 1].shift();
+        
+//         if (greps.length > 0 && greps[greps.length - 1] === target) {
+//             greps.pop();
+//             count += 2;
+//         } else {
+//             greps.push(target);
+//         }
+//     });
+    
+//     return count;
+// }
+
+// 코딩테스트 연습 > Summer/Winter Coding(~2018) >. 소수 만들기
+function solution(nums) {
+
+    const sosuMap = [false, false, true];
+    
+    // 1000 이하의 소수맵 만들기 (에라토스테네스의 체)
+    for (let i = 2; i < 3000; i++) {
+        if (sosuMap[i] === false) {
+            continue;
+        }
+
+        sosuMap[i] = true;
+
+        let temp = i + i;
+
+        while (temp < 3000) {
+            sosuMap[temp] = false;
+            temp += i;
+        }
+    }
+
+    // 3개 숫자 조합하면서 소수인지 판별 & count
+    let count = 0;
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            for (let x = j + 1; x < nums.length; x++) {
+                if (sosuMap[nums[i] + nums[j] + nums[x]]) {
+                    ++count;
+                }
             }
-        });
-    });
-    
-    const greps = [];
-    
-    moves.map(m => {
-        if (reBoard[m - 1].length === 0) {
-            return;
         }
-        
-        const target = reBoard[m - 1].shift();
-        
-        if (greps.length > 0 && greps[greps.length - 1] === target) {
-            greps.pop();
-            count += 2;
-        } else {
-            greps.push(target);
-        }
-    });
+    }
     
     return count;
 }
