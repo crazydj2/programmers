@@ -253,41 +253,56 @@
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌2 > 약수의 개수와 덧셈
 // "타겟 N 의 제곱근이 정수이면 약수의 개수는 홀수, 제곱근이 정수가 아니면 약수의 개수는 짝수" 라는 공식으로 더 간단하게 코딩 가능
-function solution(left, right) {
+// function solution(left, right) {
 
-    // 약수의 개수를 리턴하는 함수
-    const getDivisorLength = n => {
-        if (n === 1) {
-            return 1;
-        }
+//     // 약수의 개수를 리턴하는 함수
+//     const getDivisorLength = n => {
+//         if (n === 1) {
+//             return 1;
+//         }
         
-        let count = 0;
+//         let count = 0;
         
-        // 나눴을때 나머지가 없으면 약수이며, 또한 쌍을 이루는 나머지 숫자도 약수이다. (ex: "N === n1 * n2" 일때 n1, n2 모두 약수임.)
-        // 즉 2개의 약수를 동시에 찾을 수 있으므로 한번 카운팅할때마다 2씩 증가하며, 이에 따라 최대 sqrt(n) 번만 for 문을 돌면 됨.
-        // 다만 제곱근의 경우에는 n1 === n2 가 동일하므로 이 부분에 대한 예외처리만 추가
-        for (let i = 1; i <= Math.sqrt(n); i++) {
-            if (n % i === 0) {
-                if (i === Math.sqrt(n)) {
-                    count += 1;
-                } else {
-                    count += 2;
-                }
-            }
-        }
+//         // 나눴을때 나머지가 없으면 약수이며, 또한 쌍을 이루는 나머지 숫자도 약수이다. (ex: "N === n1 * n2" 일때 n1, n2 모두 약수임.)
+//         // 즉 2개의 약수를 동시에 찾을 수 있으므로 한번 카운팅할때마다 2씩 증가하며, 이에 따라 최대 sqrt(n) 번만 for 문을 돌면 됨.
+//         // 다만 제곱근의 경우에는 n1 === n2 가 동일하므로 이 부분에 대한 예외처리만 추가
+//         for (let i = 1; i <= Math.sqrt(n); i++) {
+//             if (n % i === 0) {
+//                 if (i === Math.sqrt(n)) {
+//                     count += 1;
+//                 } else {
+//                     count += 2;
+//                 }
+//             }
+//         }
         
-        return count;
-    };
+//         return count;
+//     };
+    
+//     let result = 0;
+    
+//     for (let i = left; i <= right; i++) {
+//         if (getDivisorLength(i) % 2 === 0) {
+//             result += i;
+//         } else {
+//             result -= i;
+//         }
+//     }
+    
+//     return result;
+// }
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 3진법 뒤집기
+function solution(n) {
+    const arr = n.toString(3).split('');
     
     let result = 0;
     
-    for (let i = left; i <= right; i++) {
-        if (getDivisorLength(i) % 2 === 0) {
-            result += i;
-        } else {
-            result -= i;
-        }
-    }
+    let exponent = 0;
+    arr.map(a => {
+        result += (Number(a) * Math.pow(3, exponent));
+        ++exponent;
+    });
     
     return result;
 }
