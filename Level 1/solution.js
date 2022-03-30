@@ -293,16 +293,39 @@
 // }
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 3진법 뒤집기
-function solution(n) {
-    const arr = n.toString(3).split('');
+// function solution(n) {
+//     const arr = n.toString(3).split('');
     
-    let result = 0;
+//     let result = 0;
     
-    let exponent = 0;
-    arr.map(a => {
-        result += (Number(a) * Math.pow(3, exponent));
-        ++exponent;
+//     let exponent = 0;
+//     arr.map(a => {
+//         result += (Number(a) * Math.pow(3, exponent));
+//         ++exponent;
+//     });
+    
+//     return result;
+// }
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 두 개 뽑아서 더하기
+function solution(numbers) {
+    const map = [];
+    
+    numbers = numbers.sort((n1, n2) => n1 - n2);
+    
+    for (let i = 0; i < numbers.length - 1; i++) {
+        for (let j = i + 1; j < numbers.length; j++) {
+            map[numbers[i] + numbers[j]] = true;
+        }
+    }
+    
+    const answer = [];
+    
+    map.map((a, i) => {
+        if (a) {
+            answer.push(i);
+        }
     });
     
-    return result;
+    return answer;
 }
