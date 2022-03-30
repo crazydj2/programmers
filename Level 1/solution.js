@@ -308,24 +308,65 @@
 // }
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 두 개 뽑아서 더하기
-function solution(numbers) {
-    const map = [];
+// function solution(numbers) {
+//     const map = [];
     
-    numbers = numbers.sort((n1, n2) => n1 - n2);
+//     numbers = numbers.sort((n1, n2) => n1 - n2);
     
-    for (let i = 0; i < numbers.length - 1; i++) {
-        for (let j = i + 1; j < numbers.length; j++) {
-            map[numbers[i] + numbers[j]] = true;
+//     for (let i = 0; i < numbers.length - 1; i++) {
+//         for (let j = i + 1; j < numbers.length; j++) {
+//             map[numbers[i] + numbers[j]] = true;
+//         }
+//     }
+    
+//     const answer = [];
+    
+//     map.map((a, i) => {
+//         if (a) {
+//             answer.push(i);
+//         }
+//     });
+    
+//     return answer;
+// }
+
+// 코딩테스트 연습 > 위클리 챌린지 > 최소직사각형
+// solution([[60, 50], [30, 70], [60, 30], [80, 40]]);
+// solution([[14, 4], [19, 6], [6, 16], [18, 7], [7, 11]]);
+function solution(sizes) {
+    let box = {
+        w: 0,
+        h: 0,
+    };
+    
+    // 넘겨받은 size 를 담을 수 있는 box 리턴
+    const getBoxSize = size => {
+        const tempBox = {...box};
+        
+        if (tempBox.w < size[0] && tempBox.h < size[1]) {
+            tempBox.w = size[0];
+            tempBox.h = size[1];
+        } else if (tempBox.w < size[0]) {
+            tempBox.w = size[0];
+        } else if (tempBox.h < size[1]) {
+            tempBox.h = size[1];
         }
-    }
+        
+        return tempBox;
+    };
     
-    const answer = [];
-    
-    map.map((a, i) => {
-        if (a) {
-            answer.push(i);
+    sizes.map(size => {
+        // 현재 size, 그리고 width 와 height 를 바꾼 size 
+        // 이 두 경우에 대해 각각 담을 수 있는 box size 를 구한 후 비교
+        const box_0 = getBoxSize(size);
+        const box_1 = getBoxSize(size.reverse());
+        
+        if (box_0.w * box_0.h < box_1.w * box_1.h) {
+            box = box_0;
+        } else {
+            box = box_1;
         }
     });
     
-    return answer;
+    return box.w * box.h;
 }
