@@ -56,57 +56,160 @@
 
 
 // 코딩테스트 연습 > 2021 카카오 채용연계형 인턴십 > 거리두기 확인하기
-const checkDistance = (arr, x, y, distance, direction) => {
-    if (distance > 2 || arr[x][y] === 'X') {
-        return true;
-    }
+// const checkDistance = (arr, x, y, distance, direction) => {
+//     if (distance > 2 || arr[x][y] === 'X') {
+//         return true;
+//     }
     
-    if (distance > 0 && arr[x][y] === 'P') {
-        return false;
-    }
+//     if (distance > 0 && arr[x][y] === 'P') {
+//         return false;
+//     }
     
-    if (direction !== 'right' && x > 0) {
-        if (!checkDistance(arr, x - 1, y, distance + 1, 'left')) {
-            return false;
-        }
-    }
-    if (direction !== 'left' && x < 4) {
-        if (!checkDistance(arr, x + 1, y, distance + 1, 'right')) {
-            return false;
-        }
-    }
-    if (direction !== 'down' && y > 0) {
-        if (!checkDistance(arr, x, y - 1, distance + 1, 'up')) {
-            return false;
-        }
-    }
-    if (direction !== 'up' && y < 4) {
-        if (!checkDistance(arr, x, y + 1, distance + 1, 'down')) {
-            return false;
-        }
-    }
+//     if (direction !== 'right' && x > 0) {
+//         if (!checkDistance(arr, x - 1, y, distance + 1, 'left')) {
+//             return false;
+//         }
+//     }
+//     if (direction !== 'left' && x < 4) {
+//         if (!checkDistance(arr, x + 1, y, distance + 1, 'right')) {
+//             return false;
+//         }
+//     }
+//     if (direction !== 'down' && y > 0) {
+//         if (!checkDistance(arr, x, y - 1, distance + 1, 'up')) {
+//             return false;
+//         }
+//     }
+//     if (direction !== 'up' && y < 4) {
+//         if (!checkDistance(arr, x, y + 1, distance + 1, 'down')) {
+//             return false;
+//         }
+//     }
     
-    return true;
-};
+//     return true;
+// };
 
-const isOk = arr => {
-    for (let x = 0; x < arr.length; x++) {
-        for (let y = 0; y < arr.length; y++) {
-            if (arr[x][y] === 'P' && !checkDistance(arr, x, y, 0)) {
-                return 0;
+// const isOk = arr => {
+//     for (let x = 0; x < arr.length; x++) {
+//         for (let y = 0; y < arr.length; y++) {
+//             if (arr[x][y] === 'P' && !checkDistance(arr, x, y, 0)) {
+//                 return 0;
+//             }
+//         }
+//     }
+    
+//     return 1;
+// };
+
+// function solution(places) {
+//     var answer = [];
+    
+//     places.map(place => {
+//         answer.push(isOk(place.map(p => p.split(''))));
+//     });
+    
+//     return answer;
+// }
+
+
+// 코딩테스트 연습 > 2021 KAKAO BLIND RECRUITMENT > 메뉴 리뉴얼
+// solution(["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"], [2, 3, 4]);
+// solution(	["XYZ", "XWY", "WXA"], [2, 3, 4]);
+const getTargets = (targetStr, remainStr, count) => {
+    if (targetStr.length === count) {
+        return [targetStr];
+    }
+    
+    let result = [];
+    
+    for (let i = 0; i < remainStr.length; i++) {
+        const newTargetStr = targetStr + remainStr.slice(i, i + 1);
+        const newRemainStr = remainStr.slice(i + 1);
+        
+        result = result.concat(getTargets(newTargetStr, newRemainStr, count));
+    }
+    
+    return result;
+}
+
+const getTargetCount = (target, orders) => {
+    const arrTarget = target.split('');
+    
+    let count = 0;
+    
+    for (let i = 0; i < orders.length; i++) {
+        let isOk = true;
+        for (let j = 0; j < arrTarget.length; j++) {
+            if (!orders[i].includes(arrTarget[j])) {
+                isOk = false;
+                break;
             }
         }
+        
+        if (isOk) {
+            count++;
+        }
     }
     
-    return 1;
+    return count;
 };
 
-function solution(places) {
+const getAllTargets = (orders, course) => {
+    let targets = [];
+    
+    course.map(c => {
+        orders.map(order => {
+            if (order.length < c) {
+                return;
+            }
+            
+            targets = targets.concat(getTargets('', order, c));
+        });
+    });
+    
+    return [...new Set(targets)];
+};
+
+function solution(orders, course) {
     var answer = [];
     
-    places.map(place => {
-        answer.push(isOk(place.map(p => p.split(''))));
+    // 데이터 정렬
+    orders = orders
+        .filter(order => order.length >= course[0])
+        .map(order => order.split('').sort().join(''))
+        .sort((o1, o2) => o1.length - o2.length);
+    
+    course = course.filter(c => c <= orders[orders.length - 1].length);
+    
+    // 코스 가능한 모든 타겟 가져오기
+    const targets = getAllTargets(orders, course);
+    
+    const resultMap = {};
+    
+    // 각 타겟의 개수 카운팅 후 코스에 넣을 건지 결정
+    targets.map(target => {
+        if (!resultMap[target.length]) {
+            resultMap[target.length] = { list: [], maxCount: 0 };
+        }
+        
+        const targetCount = getTargetCount(target, orders);
+        
+        if (targetCount < 2) {
+            return;
+        }
+        
+        if (targetCount > resultMap[target.length].maxCount) {
+            resultMap[target.length] = { list: [target], maxCount: targetCount };
+        } else if (targetCount === resultMap[target.length].maxCount) {
+            resultMap[target.length].list.push(target);
+        }
     });
+    
+    for (let key in resultMap) {
+        answer = answer.concat(resultMap[key].list);
+    }
+
+    answer = answer.sort((a1, a2) => a1 > a2 ? 1 : -1);
     
     return answer;
 }
