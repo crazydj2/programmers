@@ -115,101 +115,144 @@
 // 코딩테스트 연습 > 2021 KAKAO BLIND RECRUITMENT > 메뉴 리뉴얼
 // solution(["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"], [2, 3, 4]);
 // solution(	["XYZ", "XWY", "WXA"], [2, 3, 4]);
-const getTargets = (targetStr, remainStr, count) => {
-    if (targetStr.length === count) {
-        return [targetStr];
-    }
+// const getTargets = (targetStr, remainStr, count) => {
+//     if (targetStr.length === count) {
+//         return [targetStr];
+//     }
     
-    let result = [];
+//     let result = [];
     
-    for (let i = 0; i < remainStr.length; i++) {
-        const newTargetStr = targetStr + remainStr.slice(i, i + 1);
-        const newRemainStr = remainStr.slice(i + 1);
+//     for (let i = 0; i < remainStr.length; i++) {
+//         const newTargetStr = targetStr + remainStr.slice(i, i + 1);
+//         const newRemainStr = remainStr.slice(i + 1);
         
-        result = result.concat(getTargets(newTargetStr, newRemainStr, count));
-    }
+//         result = result.concat(getTargets(newTargetStr, newRemainStr, count));
+//     }
     
-    return result;
+//     return result;
+// }
+
+// const getTargetCount = (target, orders) => {
+//     const arrTarget = target.split('');
+    
+//     let count = 0;
+    
+//     for (let i = 0; i < orders.length; i++) {
+//         let isOk = true;
+//         for (let j = 0; j < arrTarget.length; j++) {
+//             if (!orders[i].includes(arrTarget[j])) {
+//                 isOk = false;
+//                 break;
+//             }
+//         }
+        
+//         if (isOk) {
+//             count++;
+//         }
+//     }
+    
+//     return count;
+// };
+
+// const getAllTargets = (orders, course) => {
+//     let targets = [];
+    
+//     course.map(c => {
+//         orders.map(order => {
+//             if (order.length < c) {
+//                 return;
+//             }
+            
+//             targets = targets.concat(getTargets('', order, c));
+//         });
+//     });
+    
+//     return [...new Set(targets)];
+// };
+
+// function solution(orders, course) {
+//     var answer = [];
+    
+//     // 데이터 정렬
+//     orders = orders
+//         .filter(order => order.length >= course[0])
+//         .map(order => order.split('').sort().join(''))
+//         .sort((o1, o2) => o1.length - o2.length);
+    
+//     course = course.filter(c => c <= orders[orders.length - 1].length);
+    
+//     // 코스 가능한 모든 타겟 가져오기
+//     const targets = getAllTargets(orders, course);
+    
+//     const resultMap = {};
+    
+//     // 각 타겟의 개수 카운팅 후 코스에 넣을 건지 결정
+//     targets.map(target => {
+//         if (!resultMap[target.length]) {
+//             resultMap[target.length] = { list: [], maxCount: 0 };
+//         }
+        
+//         const targetCount = getTargetCount(target, orders);
+        
+//         if (targetCount < 2) {
+//             return;
+//         }
+        
+//         if (targetCount > resultMap[target.length].maxCount) {
+//             resultMap[target.length] = { list: [target], maxCount: targetCount };
+//         } else if (targetCount === resultMap[target.length].maxCount) {
+//             resultMap[target.length].list.push(target);
+//         }
+//     });
+    
+//     for (let key in resultMap) {
+//         answer = answer.concat(resultMap[key].list);
+//     }
+
+//     answer = answer.sort((a1, a2) => a1 > a2 ? 1 : -1);
+    
+//     return answer;
+// }
+
+
+// 코딩테스트 연습 > 2020 카카오 인턴십 > 수식 최대화
+// solution("50*6-3*2");
+const calculate = (weight, expression) => {
+    // 우선순위 연산자부터 계산
+    weight.map(w => {
+        for (let i = 1; i < expression.length - 1; i++) {
+            if (expression[i] === w) {
+                let num1 = Number(expression[i - 1]);
+                let num2 = Number(expression[i + 1]);
+                
+                if (w === '*') {
+                    expression.splice(i - 1, 3, num1 * num2);
+                } else if (w === '+') {
+                    expression.splice(i - 1, 3, num1 + num2);
+                } else if (w === '-') {
+                    expression.splice(i - 1, 3, num1 - num2);
+                }
+                i--;
+            }
+        }
+    });
+    
+    return Math.abs(expression[0]);
 }
 
-const getTargetCount = (target, orders) => {
-    const arrTarget = target.split('');
+function solution(expression) {
+    const allWeight = [
+        ['*', '+', '-'],
+        ['*', '-', '+'],
+        ['+', '*', '-'],
+        ['+', '-', '*'],
+        ['-', '*', '+'],
+        ['-', '+', '*'],
+    ];
     
-    let count = 0;
+    // expression 을 array 로 변경 
+    const arrExp = expression.replace(/\*|\+|-/g, match => ` ${match} `).split(' ');
     
-    for (let i = 0; i < orders.length; i++) {
-        let isOk = true;
-        for (let j = 0; j < arrTarget.length; j++) {
-            if (!orders[i].includes(arrTarget[j])) {
-                isOk = false;
-                break;
-            }
-        }
-        
-        if (isOk) {
-            count++;
-        }
-    }
-    
-    return count;
-};
-
-const getAllTargets = (orders, course) => {
-    let targets = [];
-    
-    course.map(c => {
-        orders.map(order => {
-            if (order.length < c) {
-                return;
-            }
-            
-            targets = targets.concat(getTargets('', order, c));
-        });
-    });
-    
-    return [...new Set(targets)];
-};
-
-function solution(orders, course) {
-    var answer = [];
-    
-    // 데이터 정렬
-    orders = orders
-        .filter(order => order.length >= course[0])
-        .map(order => order.split('').sort().join(''))
-        .sort((o1, o2) => o1.length - o2.length);
-    
-    course = course.filter(c => c <= orders[orders.length - 1].length);
-    
-    // 코스 가능한 모든 타겟 가져오기
-    const targets = getAllTargets(orders, course);
-    
-    const resultMap = {};
-    
-    // 각 타겟의 개수 카운팅 후 코스에 넣을 건지 결정
-    targets.map(target => {
-        if (!resultMap[target.length]) {
-            resultMap[target.length] = { list: [], maxCount: 0 };
-        }
-        
-        const targetCount = getTargetCount(target, orders);
-        
-        if (targetCount < 2) {
-            return;
-        }
-        
-        if (targetCount > resultMap[target.length].maxCount) {
-            resultMap[target.length] = { list: [target], maxCount: targetCount };
-        } else if (targetCount === resultMap[target.length].maxCount) {
-            resultMap[target.length].list.push(target);
-        }
-    });
-    
-    for (let key in resultMap) {
-        answer = answer.concat(resultMap[key].list);
-    }
-
-    answer = answer.sort((a1, a2) => a1 > a2 ? 1 : -1);
-    
-    return answer;
+    // 모든 경우에 대한 계산값을 구한 후 가장 큰 값 리턴
+    return Math.max(...allWeight.map(weight => calculate(weight, [...arrExp])));
 }
