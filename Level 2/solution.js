@@ -217,42 +217,68 @@
 
 // 코딩테스트 연습 > 2020 카카오 인턴십 > 수식 최대화
 // solution("50*6-3*2");
-const calculate = (weight, expression) => {
-    // 우선순위 연산자부터 계산
-    weight.map(w => {
-        for (let i = 1; i < expression.length - 1; i++) {
-            if (expression[i] === w) {
-                let num1 = Number(expression[i - 1]);
-                let num2 = Number(expression[i + 1]);
+// const calculate = (weight, expression) => {
+//     // 우선순위 연산자부터 계산
+//     weight.map(w => {
+//         for (let i = 1; i < expression.length - 1; i++) {
+//             if (expression[i] === w) {
+//                 let num1 = Number(expression[i - 1]);
+//                 let num2 = Number(expression[i + 1]);
                 
-                if (w === '*') {
-                    expression.splice(i - 1, 3, num1 * num2);
-                } else if (w === '+') {
-                    expression.splice(i - 1, 3, num1 + num2);
-                } else if (w === '-') {
-                    expression.splice(i - 1, 3, num1 - num2);
-                }
-                i--;
+//                 if (w === '*') {
+//                     expression.splice(i - 1, 3, num1 * num2);
+//                 } else if (w === '+') {
+//                     expression.splice(i - 1, 3, num1 + num2);
+//                 } else if (w === '-') {
+//                     expression.splice(i - 1, 3, num1 - num2);
+//                 }
+//                 i--;
+//             }
+//         }
+//     });
+    
+//     return Math.abs(expression[0]);
+// }
+
+// function solution(expression) {
+//     const allWeight = [
+//         ['*', '+', '-'],
+//         ['*', '-', '+'],
+//         ['+', '*', '-'],
+//         ['+', '-', '*'],
+//         ['-', '*', '+'],
+//         ['-', '+', '*'],
+//     ];
+    
+//     // expression 을 array 로 변경 
+//     const arrExp = expression.replace(/\*|\+|-/g, match => ` ${match} `).split(' ');
+    
+//     // 모든 경우에 대한 계산값을 구한 후 가장 큰 값 리턴
+//     return Math.max(...allWeight.map(weight => calculate(weight, [...arrExp])));
+// }
+
+
+// 코딩테스트 연습 > 2019 카카오 개발자 겨울 인턴십 > 튜플
+function solution(s) {
+    // string 에서 숫자만 뺀 array 로 정리
+    let tupleSet = s
+        .slice(1, s.length - 1)
+        .match(/\{(\d|,)+\}/g)
+        .map(t => t.replace(/\{|\}/g, '').split(','))
+        .sort((t1, t2) => t1.length - t2.length);
+    
+    
+    const result = [];
+    
+    tupleSet.map(tuple => {
+        while (tuple.length > 0) {
+            const item = Number(tuple.shift());
+            
+            if (!result.includes(item)) {
+                result.push(item);
             }
         }
     });
     
-    return Math.abs(expression[0]);
-}
-
-function solution(expression) {
-    const allWeight = [
-        ['*', '+', '-'],
-        ['*', '-', '+'],
-        ['+', '*', '-'],
-        ['+', '-', '*'],
-        ['-', '*', '+'],
-        ['-', '+', '*'],
-    ];
-    
-    // expression 을 array 로 변경 
-    const arrExp = expression.replace(/\*|\+|-/g, match => ` ${match} `).split(' ');
-    
-    // 모든 경우에 대한 계산값을 구한 후 가장 큰 값 리턴
-    return Math.max(...allWeight.map(weight => calculate(weight, [...arrExp])));
+    return result;
 }
