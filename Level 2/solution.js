@@ -259,26 +259,77 @@
 
 
 // 코딩테스트 연습 > 2019 카카오 개발자 겨울 인턴십 > 튜플
-function solution(s) {
-    // string 에서 숫자만 뺀 array 로 정리
-    let tupleSet = s
-        .slice(1, s.length - 1)
-        .match(/\{(\d|,)+\}/g)
-        .map(t => t.replace(/\{|\}/g, '').split(','))
-        .sort((t1, t2) => t1.length - t2.length);
+// function solution(s) {
+//     // string 에서 숫자만 뺀 array 로 정리
+//     let tupleSet = s
+//         .slice(1, s.length - 1)
+//         .match(/\{(\d|,)+\}/g)
+//         .map(t => t.replace(/\{|\}/g, '').split(','))
+//         .sort((t1, t2) => t1.length - t2.length);
     
     
-    const result = [];
+//     const result = [];
     
-    tupleSet.map(tuple => {
-        while (tuple.length > 0) {
-            const item = Number(tuple.shift());
+//     tupleSet.map(tuple => {
+//         while (tuple.length > 0) {
+//             const item = Number(tuple.shift());
             
-            if (!result.includes(item)) {
-                result.push(item);
+//             if (!result.includes(item)) {
+//                 result.push(item);
+//             }
+//         }
+//     });
+    
+//     return result;
+// }
+
+// 코딩테스트 연습 > 찾아라 프로그래밍 마에스터 > 게임 맵 최단거리
+// solution([[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,1],[0,0,0,0,1]]	);
+function solution(maps) {
+    const N = maps.length;
+    const M = maps[0].length;
+    const targets = [{x: 0, y: 0}];
+
+    while (targets.length > 0) {
+        const {x, y} = targets.shift();
+        const coast = maps[y][x];
+
+        if (maps[N - 1][M - 1] !== 1 && coast >= maps[N - 1][M - 1]) {
+            continue;
+        }
+
+        // left
+        if (x > 0 && maps[y][x - 1] !== 0) {
+            if (maps[y][x - 1] === 1 || maps[y][x - 1] > coast + 1) {
+                maps[y][x - 1] = coast + 1;
+                targets.push({x: x - 1, y});
             }
         }
-    });
-    
-    return result;
+
+        // right
+        if (x < M - 1 && maps[y][x + 1] !== 0) {
+            if (maps[y][x + 1] === 1 || maps[y][x + 1] > coast + 1) {
+                maps[y][x + 1] = coast + 1;
+                targets.push({x: x + 1, y});
+            }
+        }
+
+        // up
+        if (y > 0 && maps[y - 1][x] !== 0) {
+            if (maps[y - 1][x] === 1 || maps[y - 1][x] > coast + 1) {
+                maps[y - 1][x] = coast + 1;
+                targets.push({x, y: y - 1});
+            }
+        }
+
+        // down
+        if (y < N - 1 && maps[y + 1][x] !== 0) {
+            if (maps[y + 1][x] === 1 || maps[y + 1][x] > coast + 1) {
+                maps[y + 1][x] = coast + 1;
+                targets.push({x, y: y + 1});
+            }
+        }
+    }
+
+    return maps[N - 1][M - 1] === 1 ? -1 : maps[N - 1][M - 1];
 }
