@@ -285,51 +285,134 @@
 
 // 코딩테스트 연습 > 찾아라 프로그래밍 마에스터 > 게임 맵 최단거리
 // solution([[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,1],[0,0,0,0,1]]	);
-function solution(maps) {
-    const N = maps.length;
-    const M = maps[0].length;
-    const targets = [{x: 0, y: 0}];
+// function solution(maps) {
+//     const N = maps.length;
+//     const M = maps[0].length;
+//     const targets = [{x: 0, y: 0}];
 
-    while (targets.length > 0) {
-        const {x, y} = targets.shift();
-        const coast = maps[y][x];
+//     while (targets.length > 0) {
+//         const {x, y} = targets.shift();
+//         const coast = maps[y][x];
 
-        if (maps[N - 1][M - 1] !== 1 && coast >= maps[N - 1][M - 1]) {
-            continue;
-        }
+//         if (maps[N - 1][M - 1] !== 1 && coast >= maps[N - 1][M - 1]) {
+//             continue;
+//         }
 
-        // left
-        if (x > 0 && maps[y][x - 1] !== 0) {
-            if (maps[y][x - 1] === 1 || maps[y][x - 1] > coast + 1) {
-                maps[y][x - 1] = coast + 1;
-                targets.push({x: x - 1, y});
+//         // left
+//         if (x > 0 && maps[y][x - 1] !== 0) {
+//             if (maps[y][x - 1] === 1 || maps[y][x - 1] > coast + 1) {
+//                 maps[y][x - 1] = coast + 1;
+//                 targets.push({x: x - 1, y});
+//             }
+//         }
+
+//         // right
+//         if (x < M - 1 && maps[y][x + 1] !== 0) {
+//             if (maps[y][x + 1] === 1 || maps[y][x + 1] > coast + 1) {
+//                 maps[y][x + 1] = coast + 1;
+//                 targets.push({x: x + 1, y});
+//             }
+//         }
+
+//         // up
+//         if (y > 0 && maps[y - 1][x] !== 0) {
+//             if (maps[y - 1][x] === 1 || maps[y - 1][x] > coast + 1) {
+//                 maps[y - 1][x] = coast + 1;
+//                 targets.push({x, y: y - 1});
+//             }
+//         }
+
+//         // down
+//         if (y < N - 1 && maps[y + 1][x] !== 0) {
+//             if (maps[y + 1][x] === 1 || maps[y + 1][x] > coast + 1) {
+//                 maps[y + 1][x] = coast + 1;
+//                 targets.push({x, y: y + 1});
+//             }
+//         }
+//     }
+
+//     return maps[N - 1][M - 1] === 1 ? -1 : maps[N - 1][M - 1];
+// }
+
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌3 > 빛의 경로 사이클
+// solution(["SL","LR"]);
+// 싸이클을 돌면서 지나간 자리는 checkMap 에 추가
+const getCycleLength = (grid, target, checkMap) => {
+    let count = 0;
+
+    while (!checkMap[`${target.x}_${target.y}_${target.arrow}`]) {
+        checkMap[`${target.x}_${target.y}_${target.arrow}`] = true;
+
+        let next = {...target};
+
+        if (target.arrow === 'left') {
+            next.x = next.x === 0 ? grid[0].length - 1 : next.x - 1;
+
+            if (grid[next.y][next.x] === 'L') {
+                next.arrow = 'down';
+            } else if (grid[next.y][next.x] === 'R') {
+                next.arrow = 'up';
+            }
+        } else if (target.arrow === 'right') {
+            next.x = next.x === grid[0].length - 1 ? 0 : next.x + 1;
+
+            if (grid[next.y][next.x] === 'L') {
+                next.arrow = 'up';
+            } else if (grid[next.y][next.x] === 'R') {
+                next.arrow = 'down';
+            }
+        } else if (target.arrow === 'up') {
+            next.y = next.y === 0 ? grid.length - 1 : next.y - 1;
+
+            if (grid[next.y][next.x] === 'L') {
+                next.arrow = 'left';
+            } else if (grid[next.y][next.x] === 'R') {
+                next.arrow = 'right';
+            }
+        } else if (target.arrow === 'down') {
+            next.y = next.y === grid.length - 1 ? 0 : next.y + 1;
+
+            if (grid[next.y][next.x] === 'L') {
+                next.arrow = 'right';
+            } else if (grid[next.y][next.x] === 'R') {
+                next.arrow = 'left';
             }
         }
 
-        // right
-        if (x < M - 1 && maps[y][x + 1] !== 0) {
-            if (maps[y][x + 1] === 1 || maps[y][x + 1] > coast + 1) {
-                maps[y][x + 1] = coast + 1;
-                targets.push({x: x + 1, y});
-            }
-        }
+        target = next;
 
-        // up
-        if (y > 0 && maps[y - 1][x] !== 0) {
-            if (maps[y - 1][x] === 1 || maps[y - 1][x] > coast + 1) {
-                maps[y - 1][x] = coast + 1;
-                targets.push({x, y: y - 1});
-            }
-        }
+        count++;
+    }
+    
+    return count;
+};
 
-        // down
-        if (y < N - 1 && maps[y + 1][x] !== 0) {
-            if (maps[y + 1][x] === 1 || maps[y + 1][x] > coast + 1) {
-                maps[y + 1][x] = coast + 1;
-                targets.push({x, y: y + 1});
-            }
+function solution(grid) {
+    let result = [];
+    
+    // 하나의 격자 & 방향 (left, right, up, down) 을 조합하여 map 초기화
+    const checkMap = {};
+    
+    for (let x = 0; x < grid[0].length; x++) {
+        for (let y = 0; y < grid.length; y++) {
+            checkMap[`${x}_${y}_left`] = false;
+            checkMap[`${x}_${y}_right`] = false;
+            checkMap[`${x}_${y}_up`] = false;
+            checkMap[`${x}_${y}_down`] = false;
         }
     }
-
-    return maps[N - 1][M - 1] === 1 ? -1 : maps[N - 1][M - 1];
+    
+    // map 을 돌면서 격자 & 방향 을 지나는 싸이클 조사 (이미 지나갔으면 skip)
+    for (let key in checkMap) {
+        if (checkMap[key]) {
+            continue;
+        }
+        
+        const arr = key.split('_');
+        const target = {x: Number(arr[0]), y: Number(arr[1]), arrow: arr[2]};
+        result.push(getCycleLength(grid, target, checkMap));
+    }
+    
+    return result.sort((r1, r2) => r1 - r2);
 }
