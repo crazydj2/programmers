@@ -338,81 +338,163 @@
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌3 > 빛의 경로 사이클
 // solution(["SL","LR"]);
 // 싸이클을 돌면서 지나간 자리는 checkMap 에 추가
-const getCycleLength = (grid, target, checkMap) => {
-    let count = 0;
+// const getCycleLength = (grid, target, checkMap) => {
+//     let count = 0;
 
-    while (!checkMap[`${target.x}_${target.y}_${target.arrow}`]) {
-        checkMap[`${target.x}_${target.y}_${target.arrow}`] = true;
+//     while (!checkMap[`${target.x}_${target.y}_${target.arrow}`]) {
+//         checkMap[`${target.x}_${target.y}_${target.arrow}`] = true;
 
-        let next = {...target};
+//         let next = {...target};
 
-        if (target.arrow === 'left') {
-            next.x = next.x === 0 ? grid[0].length - 1 : next.x - 1;
+//         if (target.arrow === 'left') {
+//             next.x = next.x === 0 ? grid[0].length - 1 : next.x - 1;
 
-            if (grid[next.y][next.x] === 'L') {
-                next.arrow = 'down';
-            } else if (grid[next.y][next.x] === 'R') {
-                next.arrow = 'up';
-            }
-        } else if (target.arrow === 'right') {
-            next.x = next.x === grid[0].length - 1 ? 0 : next.x + 1;
+//             if (grid[next.y][next.x] === 'L') {
+//                 next.arrow = 'down';
+//             } else if (grid[next.y][next.x] === 'R') {
+//                 next.arrow = 'up';
+//             }
+//         } else if (target.arrow === 'right') {
+//             next.x = next.x === grid[0].length - 1 ? 0 : next.x + 1;
 
-            if (grid[next.y][next.x] === 'L') {
-                next.arrow = 'up';
-            } else if (grid[next.y][next.x] === 'R') {
-                next.arrow = 'down';
-            }
-        } else if (target.arrow === 'up') {
-            next.y = next.y === 0 ? grid.length - 1 : next.y - 1;
+//             if (grid[next.y][next.x] === 'L') {
+//                 next.arrow = 'up';
+//             } else if (grid[next.y][next.x] === 'R') {
+//                 next.arrow = 'down';
+//             }
+//         } else if (target.arrow === 'up') {
+//             next.y = next.y === 0 ? grid.length - 1 : next.y - 1;
 
-            if (grid[next.y][next.x] === 'L') {
-                next.arrow = 'left';
-            } else if (grid[next.y][next.x] === 'R') {
-                next.arrow = 'right';
-            }
-        } else if (target.arrow === 'down') {
-            next.y = next.y === grid.length - 1 ? 0 : next.y + 1;
+//             if (grid[next.y][next.x] === 'L') {
+//                 next.arrow = 'left';
+//             } else if (grid[next.y][next.x] === 'R') {
+//                 next.arrow = 'right';
+//             }
+//         } else if (target.arrow === 'down') {
+//             next.y = next.y === grid.length - 1 ? 0 : next.y + 1;
 
-            if (grid[next.y][next.x] === 'L') {
-                next.arrow = 'right';
-            } else if (grid[next.y][next.x] === 'R') {
-                next.arrow = 'left';
-            }
-        }
+//             if (grid[next.y][next.x] === 'L') {
+//                 next.arrow = 'right';
+//             } else if (grid[next.y][next.x] === 'R') {
+//                 next.arrow = 'left';
+//             }
+//         }
 
-        target = next;
+//         target = next;
 
-        count++;
-    }
+//         count++;
+//     }
     
-    return count;
-};
+//     return count;
+// };
 
-function solution(grid) {
-    let result = [];
+// function solution(grid) {
+//     let result = [];
     
-    // 하나의 격자 & 방향 (left, right, up, down) 을 조합하여 map 초기화
-    const checkMap = {};
+//     // 하나의 격자 & 방향 (left, right, up, down) 을 조합하여 map 초기화
+//     const checkMap = {};
     
-    for (let x = 0; x < grid[0].length; x++) {
-        for (let y = 0; y < grid.length; y++) {
-            checkMap[`${x}_${y}_left`] = false;
-            checkMap[`${x}_${y}_right`] = false;
-            checkMap[`${x}_${y}_up`] = false;
-            checkMap[`${x}_${y}_down`] = false;
-        }
-    }
+//     for (let x = 0; x < grid[0].length; x++) {
+//         for (let y = 0; y < grid.length; y++) {
+//             checkMap[`${x}_${y}_left`] = false;
+//             checkMap[`${x}_${y}_right`] = false;
+//             checkMap[`${x}_${y}_up`] = false;
+//             checkMap[`${x}_${y}_down`] = false;
+//         }
+//     }
     
-    // map 을 돌면서 격자 & 방향 을 지나는 싸이클 조사 (이미 지나갔으면 skip)
-    for (let key in checkMap) {
-        if (checkMap[key]) {
-            continue;
+//     // map 을 돌면서 격자 & 방향 을 지나는 싸이클 조사 (이미 지나갔으면 skip)
+//     for (let key in checkMap) {
+//         if (checkMap[key]) {
+//             continue;
+//         }
+        
+//         const arr = key.split('_');
+//         const target = {x: Number(arr[0]), y: Number(arr[1]), arrow: arr[2]};
+//         result.push(getCycleLength(grid, target, checkMap));
+//     }
+    
+//     return result.sort((r1, r2) => r1 - r2);
+// }
+
+
+// 코딩테스트 연습 > 2021 KAKAO BLIND RECRUITMENT > 순위 검색
+// solution(["java backend junior pizza 150", "python frontend senior chicken 210", "python frontend senior chicken 150", "cpp backend senior pizza 260", "java backend junior chicken 80", "python backend senior chicken 50"], ["java and backend and junior and pizza 100", "java and backend and junior and pizza 101", "python and frontend and senior and chicken 200", "cpp and - and senior and pizza 250", "- and backend and senior and - 150", "- and - and - and chicken 100", "- and - and - and - 150"]);
+const checkMap = (map, info) => {
+    const arr = info.split(' ');
+    const num = Number(arr[4]);
+    
+    const condition = arr.slice(0, 4);
+    let arrCondition = [condition.join(' ')];
+    
+    arrCondition.push(`- ${condition[1]} ${condition[2]} ${condition[3]}`);
+    arrCondition.push(`${condition[0]} - ${condition[2]} ${condition[3]}`);
+    arrCondition.push(`${condition[0]} ${condition[1]} - ${condition[3]}`);
+    arrCondition.push(`${condition[0]} ${condition[1]} ${condition[2]} -`);
+    
+    arrCondition.push(`- - ${condition[2]} ${condition[3]}`);
+    arrCondition.push(`- ${condition[1]} - ${condition[3]}`);
+    arrCondition.push(`- ${condition[1]} ${condition[2]} -`);
+    arrCondition.push(`${condition[0]} - - ${condition[3]}`);
+    arrCondition.push(`${condition[0]} - ${condition[2]} -`);
+    arrCondition.push(`${condition[0]} ${condition[1]} - -`);
+    
+    arrCondition.push(`- - - ${condition[3]}`);
+    arrCondition.push(`- - ${condition[2]} -`);
+    arrCondition.push(`- ${condition[1]} - -`);
+    arrCondition.push(`${condition[0]} - - -`);
+    
+    arrCondition.push(`- - - -`);
+    
+    arrCondition.map(c => {
+        if (!map[c]) {
+            map[c] = [];
         }
         
-        const arr = key.split('_');
-        const target = {x: Number(arr[0]), y: Number(arr[1]), arrow: arr[2]};
-        result.push(getCycleLength(grid, target, checkMap));
+        map[c].push(num);
+    });
+};
+
+function solution(info, query) {
+    const result = [];
+    
+    const map = {};
+    
+    const infos = info.map(i => {
+        checkMap(map, i);
+    });
+    
+    for (const key in map) {
+        map[key] = map[key].sort((m1, m2) => m1 > m2 ? 1 : -1);
     }
     
-    return result.sort((r1, r2) => r1 - r2);
+    return query.map(q => {
+        const arr = q.replace(/ and /g, ' ').split(' ');
+        
+        const num = Number(arr[4]);
+        
+        const condition = arr.slice(0, 4).join(' ');
+        
+        const targets = map[condition] || [];
+        
+        let start = 0;
+        let end = targets.length - 1;
+        let center = Math.floor((start + end) / 2);
+        let temp = targets.length;
+        
+        while (start <= end) {
+            center = Math.floor((start + end) / 2);
+            
+            if (targets[center] >= num) {
+                temp = center;
+                end = center - 1;
+            } else {
+                start = center + 1;
+            }
+        }
+        
+        const result = targets.length - temp;
+        
+        return result < 0 ? 0 : result;
+    });
 }
