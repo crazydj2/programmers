@@ -420,81 +420,119 @@
 
 // 코딩테스트 연습 > 2021 KAKAO BLIND RECRUITMENT > 순위 검색
 // solution(["java backend junior pizza 150", "python frontend senior chicken 210", "python frontend senior chicken 150", "cpp backend senior pizza 260", "java backend junior chicken 80", "python backend senior chicken 50"], ["java and backend and junior and pizza 100", "java and backend and junior and pizza 101", "python and frontend and senior and chicken 200", "cpp and - and senior and pizza 250", "- and backend and senior and - 150", "- and - and - and chicken 100", "- and - and - and - 150"]);
-const checkMap = (map, info) => {
-    const arr = info.split(' ');
-    const num = Number(arr[4]);
+// const checkMap = (map, info) => {
+//     const arr = info.split(' ');
+//     const num = Number(arr[4]);
     
-    const condition = arr.slice(0, 4);
-    let arrCondition = [condition.join(' ')];
+//     const condition = arr.slice(0, 4);
+//     let arrCondition = [condition.join(' ')];
     
-    arrCondition.push(`- ${condition[1]} ${condition[2]} ${condition[3]}`);
-    arrCondition.push(`${condition[0]} - ${condition[2]} ${condition[3]}`);
-    arrCondition.push(`${condition[0]} ${condition[1]} - ${condition[3]}`);
-    arrCondition.push(`${condition[0]} ${condition[1]} ${condition[2]} -`);
+//     arrCondition.push(`- ${condition[1]} ${condition[2]} ${condition[3]}`);
+//     arrCondition.push(`${condition[0]} - ${condition[2]} ${condition[3]}`);
+//     arrCondition.push(`${condition[0]} ${condition[1]} - ${condition[3]}`);
+//     arrCondition.push(`${condition[0]} ${condition[1]} ${condition[2]} -`);
     
-    arrCondition.push(`- - ${condition[2]} ${condition[3]}`);
-    arrCondition.push(`- ${condition[1]} - ${condition[3]}`);
-    arrCondition.push(`- ${condition[1]} ${condition[2]} -`);
-    arrCondition.push(`${condition[0]} - - ${condition[3]}`);
-    arrCondition.push(`${condition[0]} - ${condition[2]} -`);
-    arrCondition.push(`${condition[0]} ${condition[1]} - -`);
+//     arrCondition.push(`- - ${condition[2]} ${condition[3]}`);
+//     arrCondition.push(`- ${condition[1]} - ${condition[3]}`);
+//     arrCondition.push(`- ${condition[1]} ${condition[2]} -`);
+//     arrCondition.push(`${condition[0]} - - ${condition[3]}`);
+//     arrCondition.push(`${condition[0]} - ${condition[2]} -`);
+//     arrCondition.push(`${condition[0]} ${condition[1]} - -`);
     
-    arrCondition.push(`- - - ${condition[3]}`);
-    arrCondition.push(`- - ${condition[2]} -`);
-    arrCondition.push(`- ${condition[1]} - -`);
-    arrCondition.push(`${condition[0]} - - -`);
+//     arrCondition.push(`- - - ${condition[3]}`);
+//     arrCondition.push(`- - ${condition[2]} -`);
+//     arrCondition.push(`- ${condition[1]} - -`);
+//     arrCondition.push(`${condition[0]} - - -`);
     
-    arrCondition.push(`- - - -`);
+//     arrCondition.push(`- - - -`);
     
-    arrCondition.map(c => {
-        if (!map[c]) {
-            map[c] = [];
-        }
+//     arrCondition.map(c => {
+//         if (!map[c]) {
+//             map[c] = [];
+//         }
         
-        map[c].push(num);
-    });
-};
+//         map[c].push(num);
+//     });
+// };
 
-function solution(info, query) {
-    const result = [];
+// function solution(info, query) {
+//     const result = [];
     
-    const map = {};
+//     const map = {};
     
-    const infos = info.map(i => {
-        checkMap(map, i);
-    });
+//     const infos = info.map(i => {
+//         checkMap(map, i);
+//     });
     
-    for (const key in map) {
-        map[key] = map[key].sort((m1, m2) => m1 > m2 ? 1 : -1);
+//     for (const key in map) {
+//         map[key] = map[key].sort((m1, m2) => m1 > m2 ? 1 : -1);
+//     }
+    
+//     return query.map(q => {
+//         const arr = q.replace(/ and /g, ' ').split(' ');
+        
+//         const num = Number(arr[4]);
+        
+//         const condition = arr.slice(0, 4).join(' ');
+        
+//         const targets = map[condition] || [];
+        
+//         let start = 0;
+//         let end = targets.length - 1;
+//         let center = Math.floor((start + end) / 2);
+//         let temp = targets.length;
+        
+//         while (start <= end) {
+//             center = Math.floor((start + end) / 2);
+            
+//             if (targets[center] >= num) {
+//                 temp = center;
+//                 end = center - 1;
+//             } else {
+//                 start = center + 1;
+//             }
+//         }
+        
+//         const result = targets.length - temp;
+        
+//         return result < 0 ? 0 : result;
+//     });
+// }
+
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌2 > 괄호 회전하기
+const isOk = s => {
+    const stack = [];
+    
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] === ')' || s[i] === ']' || s[i] === '}') {
+            const last = stack.pop();
+            
+            if (!last 
+                || (s[i] === ')' && last !== '(') 
+                || (s[i] === ']' && last !== '[') 
+                || (s[i] === '}' && last !== '{') ) {
+                return false;
+            }
+        } else {
+            stack.push(s[i]);
+        }
     }
     
-    return query.map(q => {
-        const arr = q.replace(/ and /g, ' ').split(' ');
-        
-        const num = Number(arr[4]);
-        
-        const condition = arr.slice(0, 4).join(' ');
-        
-        const targets = map[condition] || [];
-        
-        let start = 0;
-        let end = targets.length - 1;
-        let center = Math.floor((start + end) / 2);
-        let temp = targets.length;
-        
-        while (start <= end) {
-            center = Math.floor((start + end) / 2);
-            
-            if (targets[center] >= num) {
-                temp = center;
-                end = center - 1;
-            } else {
-                start = center + 1;
-            }
+    return stack.length === 0;
+};
+
+function solution(s) {
+    
+    let result = 0;
+    
+    for (let i = 0; i < s.length; i++) {
+        if (isOk(s)) {
+            result++;
         }
         
-        const result = targets.length - temp;
-        
-        return result < 0 ? 0 : result;
-    });
+        s = s.slice(1) + s[0];
+    }
+    
+    return result;
 }
