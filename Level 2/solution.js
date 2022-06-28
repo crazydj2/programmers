@@ -501,38 +501,69 @@
 
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌2 > 괄호 회전하기
-const isOk = s => {
-    const stack = [];
+// const isOk = s => {
+//     const stack = [];
     
-    for (let i = 0; i < s.length; i++) {
-        if (s[i] === ')' || s[i] === ']' || s[i] === '}') {
-            const last = stack.pop();
+//     for (let i = 0; i < s.length; i++) {
+//         if (s[i] === ')' || s[i] === ']' || s[i] === '}') {
+//             const last = stack.pop();
             
-            if (!last 
-                || (s[i] === ')' && last !== '(') 
-                || (s[i] === ']' && last !== '[') 
-                || (s[i] === '}' && last !== '{') ) {
-                return false;
-            }
-        } else {
-            stack.push(s[i]);
-        }
+//             if (!last 
+//                 || (s[i] === ')' && last !== '(') 
+//                 || (s[i] === ']' && last !== '[') 
+//                 || (s[i] === '}' && last !== '{') ) {
+//                 return false;
+//             }
+//         } else {
+//             stack.push(s[i]);
+//         }
+//     }
+    
+//     return stack.length === 0;
+// };
+
+// function solution(s) {
+    
+//     let result = 0;
+    
+//     for (let i = 0; i < s.length; i++) {
+//         if (isOk(s)) {
+//             result++;
+//         }
+        
+//         s = s.slice(1) + s[0];
+//     }
+    
+//     return result;
+// }
+
+
+// 코딩테스트 연습 > Summer/Winter Coding(~2018) > 배달
+const beadal = (town, coast, map, road, K) => {
+    if (coast <= K) {
+        map[town - 1] = coast;
     }
     
-    return stack.length === 0;
+    const remainLoad = road.filter(r => r[0] !== town && r[1] !== town);
+    
+    road
+        .filter(r => r[0] === town || r[1] === town)
+        .map(r => {
+            const next = r[1] === town ? r[0] : r[1];
+            const nextCoast = coast + r[2];
+        
+            if (nextCoast <= K && nextCoast < map[next - 1]) {
+                beadal(next, nextCoast, map, remainLoad, K);
+            }
+        });
 };
 
-function solution(s) {
+function solution(N, road, K) {
+    var answer = 0;
     
-    let result = 0;
+    const map = (new Array(N)).fill(K + 1);
     
-    for (let i = 0; i < s.length; i++) {
-        if (isOk(s)) {
-            result++;
-        }
-        
-        s = s.slice(1) + s[0];
-    }
-    
-    return result;
+    beadal(1, 0, map, [...road], K);
+
+    return map.filter(coast => coast <= K).length;
 }
