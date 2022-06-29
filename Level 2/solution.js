@@ -539,31 +539,60 @@
 
 
 // 코딩테스트 연습 > Summer/Winter Coding(~2018) > 배달
-const beadal = (town, coast, map, road, K) => {
-    if (coast <= K) {
-        map[town - 1] = coast;
+// const beadal = (town, coast, map, road, K) => {
+//     if (coast <= K) {
+//         map[town - 1] = coast;
+//     }
+    
+//     const remainLoad = road.filter(r => r[0] !== town && r[1] !== town);
+    
+//     road
+//         .filter(r => r[0] === town || r[1] === town)
+//         .map(r => {
+//             const next = r[1] === town ? r[0] : r[1];
+//             const nextCoast = coast + r[2];
+        
+//             if (nextCoast <= K && nextCoast < map[next - 1]) {
+//                 beadal(next, nextCoast, map, remainLoad, K);
+//             }
+//         });
+// };
+
+// function solution(N, road, K) {
+//     var answer = 0;
+    
+//     const map = (new Array(N)).fill(K + 1);
+    
+//     beadal(1, 0, map, [...road], K);
+
+//     return map.filter(coast => coast <= K).length;
+// }
+
+
+// 코딩테스트 연습 > 연습문제 > 2 x n 타일링
+const countRectangle = (remainCount, map) => {
+    if (remainCount === 1) {
+        return 1;
+    } else if (remainCount === 2) {
+        return 2;
     }
     
-    const remainLoad = road.filter(r => r[0] !== town && r[1] !== town);
+    if (!map.has(remainCount)) {
+        const count = countRectangle(remainCount - 2, map) + countRectangle(remainCount - 1, map);
+        map.set(remainCount, count % 1000000007);
+    }
     
-    road
-        .filter(r => r[0] === town || r[1] === town)
-        .map(r => {
-            const next = r[1] === town ? r[0] : r[1];
-            const nextCoast = coast + r[2];
-        
-            if (nextCoast <= K && nextCoast < map[next - 1]) {
-                beadal(next, nextCoast, map, remainLoad, K);
-            }
-        });
-};
+    return map.get(remainCount);
+}
 
-function solution(N, road, K) {
-    var answer = 0;
+function solution(n) {
+    return countRectangle(n, new Map());
     
-    const map = (new Array(N)).fill(K + 1);
+    const stack = [1, 2];
     
-    beadal(1, 0, map, [...road], K);
-
-    return map.filter(coast => coast <= K).length;
+    for (let i = 2; i < n; i++) {
+        stack.push((stack[i - 2] + stack[i - 1]) % 1000000007);
+    }
+    
+    return stack[n - 1];
 }
