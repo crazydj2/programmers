@@ -570,29 +570,52 @@
 
 
 // 코딩테스트 연습 > 연습문제 > 2 x n 타일링
-const countRectangle = (remainCount, map) => {
-    if (remainCount === 1) {
-        return 1;
-    } else if (remainCount === 2) {
-        return 2;
-    }
+// const countRectangle = (remainCount, map) => {
+//     if (remainCount === 1) {
+//         return 1;
+//     } else if (remainCount === 2) {
+//         return 2;
+//     }
     
-    if (!map.has(remainCount)) {
-        const count = countRectangle(remainCount - 2, map) + countRectangle(remainCount - 1, map);
-        map.set(remainCount, count % 1000000007);
-    }
+//     if (!map.has(remainCount)) {
+//         const count = countRectangle(remainCount - 2, map) + countRectangle(remainCount - 1, map);
+//         map.set(remainCount, count % 1000000007);
+//     }
     
-    return map.get(remainCount);
+//     return map.get(remainCount);
+// }
+
+// function solution(n) {
+//     return countRectangle(n, new Map());
+    
+//     const stack = [1, 2];
+    
+//     for (let i = 2; i < n; i++) {
+//         stack.push((stack[i - 2] + stack[i - 1]) % 1000000007);
+//     }
+    
+//     return stack[n - 1];
+// }
+
+
+// 코딩테스트 연습 > 위클리 챌린지 > 피로도
+const getMaxDungeons = (k, dungeons, currentNum) => {
+    let result = currentNum;
+    
+    dungeons = dungeons.filter(d => d[0] <= k);
+    
+    dungeons.map((d, index) => {
+        const newTargets = dungeons.filter((fd, fi) => fi !== index);
+        const tempResult = getMaxDungeons(k - d[1], newTargets, currentNum + 1);
+
+        if (tempResult > result) {
+            result = tempResult;
+        }
+    });
+    
+    return result;
 }
 
-function solution(n) {
-    return countRectangle(n, new Map());
-    
-    const stack = [1, 2];
-    
-    for (let i = 2; i < n; i++) {
-        stack.push((stack[i - 2] + stack[i - 1]) % 1000000007);
-    }
-    
-    return stack[n - 1];
+function solution(k, dungeons) {
+    return getMaxDungeons(k, [...dungeons], 0);
 }
