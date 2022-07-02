@@ -599,23 +599,53 @@
 
 
 // 코딩테스트 연습 > 위클리 챌린지 > 피로도
-const getMaxDungeons = (k, dungeons, currentNum) => {
-    let result = currentNum;
+// const getMaxDungeons = (k, dungeons, currentNum) => {
+//     let result = currentNum;
     
-    dungeons = dungeons.filter(d => d[0] <= k);
+//     dungeons = dungeons.filter(d => d[0] <= k);
     
-    dungeons.map((d, index) => {
-        const newTargets = dungeons.filter((fd, fi) => fi !== index);
-        const tempResult = getMaxDungeons(k - d[1], newTargets, currentNum + 1);
+//     dungeons.map((d, index) => {
+//         const newTargets = dungeons.filter((fd, fi) => fi !== index);
+//         const tempResult = getMaxDungeons(k - d[1], newTargets, currentNum + 1);
 
-        if (tempResult > result) {
-            result = tempResult;
+//         if (tempResult > result) {
+//             result = tempResult;
+//         }
+//     });
+    
+//     return result;
+// }
+
+// function solution(k, dungeons) {
+//     return getMaxDungeons(k, [...dungeons], 0);
+// }
+
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌2 > 2개 이하로 다른 비트
+const getMinNumber = target => {
+    const targetBit = target.toString(2);
+    let resultBit = targetBit;
+    
+    if (!targetBit.includes('0')) {
+        // bit 가 '1' 로만 이루어진 경우 맨 앞자리 bit 에 '1' 을 더한 경우가 제일 가까운 수
+        // ex) '111' -> '1011', '1111' -> '10111', ...
+        resultBit = '10' + (new Array(targetBit.length - 1)).fill('1').join('');
+    } else {
+        // bit 가 '0', '1' 로 이루어진 경우
+        // 가장 마지막에 위치한 '0' bit 에 '1' 을 더하고 바로 다음에 위치한 bit 를 '0' 으로 바꾼 경우가 제일 가까운 수
+        // ex) '10' -> '11', '1011' -> '1101', '110111' -> '111011', ...
+        const lastIndex = resultBit.lastIndexOf('0');
+        resultBit = resultBit.split('');
+        resultBit[lastIndex] = '1';
+        if (lastIndex + 1 < resultBit.length) {
+            resultBit[lastIndex + 1] = '0';
         }
-    });
+        resultBit = resultBit.join('');
+    }
     
-    return result;
-}
+    return parseInt(resultBit, 2);
+};
 
-function solution(k, dungeons) {
-    return getMaxDungeons(k, [...dungeons], 0);
+function solution(numbers) {
+    return numbers.map(n => getMinNumber(n));
 }
