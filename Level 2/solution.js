@@ -622,30 +622,76 @@
 
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌2 > 2개 이하로 다른 비트
-const getMinNumber = target => {
-    const targetBit = target.toString(2);
-    let resultBit = targetBit;
+// const getMinNumber = target => {
+//     const targetBit = target.toString(2);
+//     let resultBit = targetBit;
     
-    if (!targetBit.includes('0')) {
-        // bit 가 '1' 로만 이루어진 경우 맨 앞자리 bit 에 '1' 을 더한 경우가 제일 가까운 수
-        // ex) '111' -> '1011', '1111' -> '10111', ...
-        resultBit = '10' + (new Array(targetBit.length - 1)).fill('1').join('');
-    } else {
-        // bit 가 '0', '1' 로 이루어진 경우
-        // 가장 마지막에 위치한 '0' bit 에 '1' 을 더하고 바로 다음에 위치한 bit 를 '0' 으로 바꾼 경우가 제일 가까운 수
-        // ex) '10' -> '11', '1011' -> '1101', '110111' -> '111011', ...
-        const lastIndex = resultBit.lastIndexOf('0');
-        resultBit = resultBit.split('');
-        resultBit[lastIndex] = '1';
-        if (lastIndex + 1 < resultBit.length) {
-            resultBit[lastIndex + 1] = '0';
+//     if (!targetBit.includes('0')) {
+//         // bit 가 '1' 로만 이루어진 경우 맨 앞자리 bit 에 '1' 을 더한 경우가 제일 가까운 수
+//         // ex) '111' -> '1011', '1111' -> '10111', ...
+//         resultBit = '10' + (new Array(targetBit.length - 1)).fill('1').join('');
+//     } else {
+//         // bit 가 '0', '1' 로 이루어진 경우
+//         // 가장 마지막에 위치한 '0' bit 에 '1' 을 더하고 바로 다음에 위치한 bit 를 '0' 으로 바꾼 경우가 제일 가까운 수
+//         // ex) '10' -> '11', '1011' -> '1101', '110111' -> '111011', ...
+//         const lastIndex = resultBit.lastIndexOf('0');
+//         resultBit = resultBit.split('');
+//         resultBit[lastIndex] = '1';
+//         if (lastIndex + 1 < resultBit.length) {
+//             resultBit[lastIndex + 1] = '0';
+//         }
+//         resultBit = resultBit.join('');
+//     }
+    
+//     return parseInt(resultBit, 2);
+// };
+
+// function solution(numbers) {
+//     return numbers.map(n => getMinNumber(n));
+// }
+
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 삼각 달팽이
+function solution(n) {
+    const triangle = [];
+    const location = { x: 0, y: 0 };
+    const condition = {
+        count: 0,
+        max: n,
+        direction: 'down',
+    };
+    
+    let num = 1;
+    
+    while (condition.max > 0) {
+        if (!triangle[location.y]) {
+            triangle[location.y] = [];
         }
-        resultBit = resultBit.join('');
+        const arr = triangle[location.y];
+        
+        arr[location.x] = num;
+        num++;
+        
+        condition.count++;
+
+        if (condition.count >= condition.max) {
+            condition.count = 0;
+            condition.max--;
+
+            condition.direction = 
+                condition.direction === 'down' ? 'right' :
+                condition.direction === 'right' ? 'up' : 'down';
+        }
+        
+        if (condition.direction === 'down') {
+            location.y++;
+        } else if (condition.direction === 'right') {
+            location.x++;
+        } else if (condition.direction === 'up') {
+            location.x--;
+            location.y--;
+        }
     }
     
-    return parseInt(resultBit, 2);
-};
-
-function solution(numbers) {
-    return numbers.map(n => getMinNumber(n));
+    return triangle.flatMap(v => v);
 }
