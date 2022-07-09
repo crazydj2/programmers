@@ -652,46 +652,107 @@
 
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 삼각 달팽이
-function solution(n) {
-    const triangle = [];
-    const location = { x: 0, y: 0 };
-    const condition = {
-        count: 0,
-        max: n,
-        direction: 'down',
-    };
+// function solution(n) {
+//     const triangle = [];
+//     const location = { x: 0, y: 0 };
+//     const condition = {
+//         count: 0,
+//         max: n,
+//         direction: 'down',
+//     };
     
-    let num = 1;
+//     let num = 1;
     
-    while (condition.max > 0) {
-        if (!triangle[location.y]) {
-            triangle[location.y] = [];
-        }
-        const arr = triangle[location.y];
+//     while (condition.max > 0) {
+//         if (!triangle[location.y]) {
+//             triangle[location.y] = [];
+//         }
+//         const arr = triangle[location.y];
         
-        arr[location.x] = num;
-        num++;
+//         arr[location.x] = num;
+//         num++;
         
-        condition.count++;
+//         condition.count++;
 
-        if (condition.count >= condition.max) {
-            condition.count = 0;
-            condition.max--;
+//         if (condition.count >= condition.max) {
+//             condition.count = 0;
+//             condition.max--;
 
-            condition.direction = 
-                condition.direction === 'down' ? 'right' :
-                condition.direction === 'right' ? 'up' : 'down';
-        }
+//             condition.direction = 
+//                 condition.direction === 'down' ? 'right' :
+//                 condition.direction === 'right' ? 'up' : 'down';
+//         }
         
-        if (condition.direction === 'down') {
-            location.y++;
-        } else if (condition.direction === 'right') {
-            location.x++;
-        } else if (condition.direction === 'up') {
-            location.x--;
-            location.y--;
+//         if (condition.direction === 'down') {
+//             location.y++;
+//         } else if (condition.direction === 'right') {
+//             location.x++;
+//         } else if (condition.direction === 'up') {
+//             location.x--;
+//             location.y--;
+//         }
+//     }
+    
+//     return triangle.flatMap(v => v);
+// }
+
+
+// 코딩테스트 연습 > 위클리 챌린지 > 교점에 별 만들기
+function solution(line) {
+    
+    let stars = [];
+    
+    let minX = null;
+    let minY = null;
+    let maxX = null;
+    let maxY = null;
+    
+    for (let i = 0; i < line.length - 1; i++) {
+        const l1 = line[i];
+        
+        for (let j = i + 1; j < line.length; j++) {
+            const l2 = line[j];
+            
+            const x = ((l1[1] * l2[2]) - (l1[2] * l2[1])) / ((l1[0] * l2[1]) - (l1[1] * l2[0]));
+            const y = ((l1[2] * l2[0]) - (l1[0] * l2[2])) / ((l1[0] * l2[1]) - (l1[1] * l2[0]));
+            
+            if (Number.isInteger(x) && Number.isInteger(y)) {
+                
+                if (minX === null || x < minX) {
+                    minX = x;
+                }
+                if (maxX === null || x > maxX) {
+                    maxX = x;
+                }
+                if (minY === null || y < minY) {
+                    minY = y;
+                }
+                if (maxY === null || y > maxY) {
+                    maxY = y;
+                }
+                
+                stars.push({x, y});
+            }
         }
     }
     
-    return triangle.flatMap(v => v);
+    maxX -= minX;
+    maxY -= minY;
+    stars = stars.map(star => {
+        return {
+            x: star.x - minX,
+            y: Math.abs(maxY - (star.y - minY))
+        };
+    });
+    
+    let result = (new Array(maxY + 1)).fill([]);
+    result = result.map(r => (new Array(maxX + 1)).fill('.'));
+    
+    stars.map(star => {
+        result[star.y][star.x] = '*';
+    });
+    
+    return result.map(r => {
+        return r.join('');
+    });
 }
