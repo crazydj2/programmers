@@ -698,61 +698,98 @@
 
 
 // 코딩테스트 연습 > 위클리 챌린지 > 교점에 별 만들기
-function solution(line) {
+// function solution(line) {
     
-    let stars = [];
+//     let stars = [];
     
-    let minX = null;
-    let minY = null;
-    let maxX = null;
-    let maxY = null;
+//     let minX = null;
+//     let minY = null;
+//     let maxX = null;
+//     let maxY = null;
     
-    for (let i = 0; i < line.length - 1; i++) {
-        const l1 = line[i];
+//     for (let i = 0; i < line.length - 1; i++) {
+//         const l1 = line[i];
         
-        for (let j = i + 1; j < line.length; j++) {
-            const l2 = line[j];
+//         for (let j = i + 1; j < line.length; j++) {
+//             const l2 = line[j];
             
-            const x = ((l1[1] * l2[2]) - (l1[2] * l2[1])) / ((l1[0] * l2[1]) - (l1[1] * l2[0]));
-            const y = ((l1[2] * l2[0]) - (l1[0] * l2[2])) / ((l1[0] * l2[1]) - (l1[1] * l2[0]));
+//             const x = ((l1[1] * l2[2]) - (l1[2] * l2[1])) / ((l1[0] * l2[1]) - (l1[1] * l2[0]));
+//             const y = ((l1[2] * l2[0]) - (l1[0] * l2[2])) / ((l1[0] * l2[1]) - (l1[1] * l2[0]));
             
-            if (Number.isInteger(x) && Number.isInteger(y)) {
+//             if (Number.isInteger(x) && Number.isInteger(y)) {
                 
-                if (minX === null || x < minX) {
-                    minX = x;
-                }
-                if (maxX === null || x > maxX) {
-                    maxX = x;
-                }
-                if (minY === null || y < minY) {
-                    minY = y;
-                }
-                if (maxY === null || y > maxY) {
-                    maxY = y;
-                }
+//                 if (minX === null || x < minX) {
+//                     minX = x;
+//                 }
+//                 if (maxX === null || x > maxX) {
+//                     maxX = x;
+//                 }
+//                 if (minY === null || y < minY) {
+//                     minY = y;
+//                 }
+//                 if (maxY === null || y > maxY) {
+//                     maxY = y;
+//                 }
                 
-                stars.push({x, y});
-            }
+//                 stars.push({x, y});
+//             }
+//         }
+//     }
+    
+//     maxX -= minX;
+//     maxY -= minY;
+//     stars = stars.map(star => {
+//         return {
+//             x: star.x - minX,
+//             y: Math.abs(maxY - (star.y - minY))
+//         };
+//     });
+    
+//     let result = (new Array(maxY + 1)).fill([]);
+//     result = result.map(r => (new Array(maxX + 1)).fill('.'));
+    
+//     stars.map(star => {
+//         result[star.y][star.x] = '*';
+//     });
+    
+//     return result.map(r => {
+//         return r.join('');
+//     });
+// }
+
+
+
+// 코딩테스트 연습 > 완전탐색 > 전력망을 둘로 나누기
+function solution(n, wires) {
+    let result = n;
+    
+    wires.map((w, i) => {
+        const [n1, n2] = w;
+        
+        let nextWires = wires.filter((fw, fi) => i !== fi);
+        
+        if (nextWires.length === 0) {
+            return;
         }
-    }
-    
-    maxX -= minX;
-    maxY -= minY;
-    stars = stars.map(star => {
-        return {
-            x: star.x - minX,
-            y: Math.abs(maxY - (star.y - minY))
-        };
+        
+        const arr = [nextWires[0][0]];
+        let count = 0;
+        
+        while (arr.length > 0) {
+            const node = arr.shift();
+            count++;
+            
+            nextWires.filter(nw => node === nw[0] || node === nw[1]).map(nw => {
+                arr.push(nw[0] === node ? nw[1] : nw[0]);
+            });
+            
+            nextWires = nextWires.filter(nw => node !== nw[0] && node !== nw[1]);
+        }
+        
+        const temp = Math.abs(count - (n - count));
+        
+        result = result < temp ? result : temp;
     });
     
-    let result = (new Array(maxY + 1)).fill([]);
-    result = result.map(r => (new Array(maxX + 1)).fill('.'));
-    
-    stars.map(star => {
-        result[star.y][star.x] = '*';
-    });
-    
-    return result.map(r => {
-        return r.join('');
-    });
+    return result === n ? 0 : result;
 }
