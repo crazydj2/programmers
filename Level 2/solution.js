@@ -760,36 +760,66 @@
 
 
 // 코딩테스트 연습 > 완전탐색 > 전력망을 둘로 나누기
-function solution(n, wires) {
-    let result = n;
+// function solution(n, wires) {
+//     let result = n;
     
-    wires.map((w, i) => {
-        const [n1, n2] = w;
+//     wires.map((w, i) => {
+//         const [n1, n2] = w;
         
-        let nextWires = wires.filter((fw, fi) => i !== fi);
+//         let nextWires = wires.filter((fw, fi) => i !== fi);
         
-        if (nextWires.length === 0) {
-            return;
+//         if (nextWires.length === 0) {
+//             return;
+//         }
+        
+//         const arr = [nextWires[0][0]];
+//         let count = 0;
+        
+//         while (arr.length > 0) {
+//             const node = arr.shift();
+//             count++;
+            
+//             nextWires.filter(nw => node === nw[0] || node === nw[1]).map(nw => {
+//                 arr.push(nw[0] === node ? nw[1] : nw[0]);
+//             });
+            
+//             nextWires = nextWires.filter(nw => node !== nw[0] && node !== nw[1]);
+//         }
+        
+//         const temp = Math.abs(count - (n - count));
+        
+//         result = result < temp ? result : temp;
+//     });
+    
+//     return result === n ? 0 : result;
+// }
+
+
+// 코딩테스트 연습 > 완전탐색 > 모음사전
+const alphabet = ['A', 'E', 'I', 'O', 'U'];
+
+const check = (str, count, word) => {
+    for (let i = 0; i < alphabet.length; i++) {
+        const target = str + alphabet[i];
+        count++;
+        
+        if (target === word) {
+            return {success: true, count};
         }
         
-        const arr = [nextWires[0][0]];
-        let count = 0;
-        
-        while (arr.length > 0) {
-            const node = arr.shift();
-            count++;
-            
-            nextWires.filter(nw => node === nw[0] || node === nw[1]).map(nw => {
-                arr.push(nw[0] === node ? nw[1] : nw[0]);
-            });
-            
-            nextWires = nextWires.filter(nw => node !== nw[0] && node !== nw[1]);
+        if (target.length < alphabet.length) {
+            const result = check(target, count, word);
+            if (result.success) {
+                return result;
+            } else {
+                count = result.count;
+            }
         }
-        
-        const temp = Math.abs(count - (n - count));
-        
-        result = result < temp ? result : temp;
-    });
+    }
     
-    return result === n ? 0 : result;
+    return {success: false, count};
+};
+
+function solution(word) {
+    return check('', 0, word).count;
 }
