@@ -796,30 +796,51 @@
 
 
 // 코딩테스트 연습 > 완전탐색 > 모음사전
-const alphabet = ['A', 'E', 'I', 'O', 'U'];
+// const alphabet = ['A', 'E', 'I', 'O', 'U'];
 
-const check = (str, count, word) => {
-    for (let i = 0; i < alphabet.length; i++) {
-        const target = str + alphabet[i];
-        count++;
+// const check = (str, count, word) => {
+//     for (let i = 0; i < alphabet.length; i++) {
+//         const target = str + alphabet[i];
+//         count++;
         
-        if (target === word) {
-            return {success: true, count};
-        }
+//         if (target === word) {
+//             return {success: true, count};
+//         }
         
-        if (target.length < alphabet.length) {
-            const result = check(target, count, word);
-            if (result.success) {
-                return result;
-            } else {
-                count = result.count;
-            }
-        }
+//         if (target.length < alphabet.length) {
+//             const result = check(target, count, word);
+//             if (result.success) {
+//                 return result;
+//             } else {
+//                 count = result.count;
+//             }
+//         }
+//     }
+    
+//     return {success: false, count};
+// };
+
+// function solution(word) {
+//     return check('', 0, word).count;
+// }
+
+
+// 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 이진 변환 반복하기
+function solution(s) {
+    let cCount = 0;
+    let rCount = 0;
+    
+    s = s.split('');
+    
+    while (s.length > 1) {
+        const temp = s.filter(n => n === '1').join('');
+        
+        rCount += (s.length - temp.length);
+        
+        s = temp.length.toString(2).split('');
+        
+        cCount++;
     }
     
-    return {success: false, count};
-};
-
-function solution(word) {
-    return check('', 0, word).count;
+    return [cCount, rCount];
 }
