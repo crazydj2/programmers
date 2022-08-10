@@ -826,21 +826,63 @@
 
 
 // 코딩테스트 연습 > 월간 코드 챌린지 시즌1 > 이진 변환 반복하기
-function solution(s) {
-    let cCount = 0;
-    let rCount = 0;
+// function solution(s) {
+//     let cCount = 0;
+//     let rCount = 0;
     
-    s = s.split('');
+//     s = s.split('');
     
-    while (s.length > 1) {
-        const temp = s.filter(n => n === '1').join('');
+//     while (s.length > 1) {
+//         const temp = s.filter(n => n === '1').join('');
         
-        rCount += (s.length - temp.length);
+//         rCount += (s.length - temp.length);
         
-        s = temp.length.toString(2).split('');
+//         s = temp.length.toString(2).split('');
         
-        cCount++;
+//         cCount++;
+//     }
+    
+//     return [cCount, rCount];
+// }
+
+
+// 코딩테스트 연습 > 연습문제 > N-Queen
+const isPossible = (arrX, target) => {
+    let result = true;
+    
+    for (let y = 0; y < arrX.length; y++) {
+        const x = arrX[y];
+        
+        if (x === target.x 
+            || y === target.y
+            || Math.abs(target.x - x) === Math.abs(target.y - y)) {
+            return false;
+        }
     }
     
-    return [cCount, rCount];
+    return result;
+};
+
+const getNQueenCount = (arrX, n) => {
+    if (arrX.length === n) {
+        return 1;
+    }
+    
+    let count = 0;
+    
+    const y = arrX.length;
+    
+    for (let x = 0; x < n; x++) {
+        if (!isPossible(arrX, {x, y})) {
+            continue;
+        }
+        
+        count += getNQueenCount([...arrX, x], n);
+    }
+    
+    return count;
+};
+
+function solution(n) {
+    return getNQueenCount([], n);
 }
