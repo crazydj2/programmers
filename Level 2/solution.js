@@ -847,42 +847,97 @@
 
 
 // 코딩테스트 연습 > 연습문제 > N-Queen
-const isPossible = (arrX, target) => {
-    let result = true;
+// const isPossible = (arrX, target) => {
+//     let result = true;
     
-    for (let y = 0; y < arrX.length; y++) {
-        const x = arrX[y];
+//     for (let y = 0; y < arrX.length; y++) {
+//         const x = arrX[y];
         
-        if (x === target.x 
-            || y === target.y
-            || Math.abs(target.x - x) === Math.abs(target.y - y)) {
-            return false;
-        }
-    }
+//         if (x === target.x 
+//             || y === target.y
+//             || Math.abs(target.x - x) === Math.abs(target.y - y)) {
+//             return false;
+//         }
+//     }
     
-    return result;
+//     return result;
+// };
+
+// const getNQueenCount = (arrX, n) => {
+//     if (arrX.length === n) {
+//         return 1;
+//     }
+    
+//     let count = 0;
+    
+//     const y = arrX.length;
+    
+//     for (let x = 0; x < n; x++) {
+//         if (!isPossible(arrX, {x, y})) {
+//             continue;
+//         }
+        
+//         count += getNQueenCount([...arrX, x], n);
+//     }
+    
+//     return count;
+// };
+
+// function solution(n) {
+//     return getNQueenCount([], n);
+// }
+
+
+// 코딩테스트 연습 > 2022 KAKAO BLIND RECRUITMENT > 주차 요금 계산
+const calculateTime = (inTime, outTime) => {
+    const [inHour, inMin] = inTime.split(':');
+    const [outHour, outMin] = outTime.split(':');
+
+    return ((parseInt(outHour) * 60) + parseInt(outMin)) - ((parseInt(inHour) * 60) + parseInt(inMin));
 };
 
-const getNQueenCount = (arrX, n) => {
-    if (arrX.length === n) {
-        return 1;
-    }
+function solution(fees, records) {
+    const [basicTime, basicFee, unitTime, unitFee] = fees;
     
-    let count = 0;
+    const map = new Map();
     
-    const y = arrX.length;
-    
-    for (let x = 0; x < n; x++) {
-        if (!isPossible(arrX, {x, y})) {
-            continue;
+    records.map(record => {
+        const [time, number, method] = record.split(' ');
+        
+        let info = map.get(number);
+        if (!info) {
+            info = { totalTime: 0 };
         }
         
-        count += getNQueenCount([...arrX, x], n);
-    }
+        if (method === 'IN') {
+            info.inTime = time;
+            map.set(number, info);
+            return;
+        }
+        
+        info.totalTime += calculateTime(info.inTime, time);
+        info.inTime = null;
+        
+        map.set(number, info);
+    });
     
-    return count;
-};
-
-function solution(n) {
-    return getNQueenCount([], n);
+    return [...map.keys()].sort((k1, k2) => k1 - k2).map(key => {
+        const info = map.get(key);
+        
+        if (info.inTime) {
+            info.totalTime += calculateTime(info.inTime, '23:59');
+        }
+        
+        let totalFee = 0;
+        let totalTime = info.totalTime;
+        
+        totalFee += basicFee;
+        totalTime -= basicTime;
+        
+        if (totalTime > 0) {
+            totalFee += (Math.ceil(totalTime / unitTime) * unitFee);
+        }
+        
+        return totalFee;
+    });
 }
