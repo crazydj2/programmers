@@ -889,55 +889,115 @@
 
 
 // 코딩테스트 연습 > 2022 KAKAO BLIND RECRUITMENT > 주차 요금 계산
-const calculateTime = (inTime, outTime) => {
-    const [inHour, inMin] = inTime.split(':');
-    const [outHour, outMin] = outTime.split(':');
+// const calculateTime = (inTime, outTime) => {
+//     const [inHour, inMin] = inTime.split(':');
+//     const [outHour, outMin] = outTime.split(':');
 
-    return ((parseInt(outHour) * 60) + parseInt(outMin)) - ((parseInt(inHour) * 60) + parseInt(inMin));
-};
+//     return ((parseInt(outHour) * 60) + parseInt(outMin)) - ((parseInt(inHour) * 60) + parseInt(inMin));
+// };
 
-function solution(fees, records) {
-    const [basicTime, basicFee, unitTime, unitFee] = fees;
+// function solution(fees, records) {
+//     const [basicTime, basicFee, unitTime, unitFee] = fees;
     
-    const map = new Map();
+//     const map = new Map();
     
-    records.map(record => {
-        const [time, number, method] = record.split(' ');
+//     records.map(record => {
+//         const [time, number, method] = record.split(' ');
         
-        let info = map.get(number);
-        if (!info) {
-            info = { totalTime: 0 };
-        }
+//         let info = map.get(number);
+//         if (!info) {
+//             info = { totalTime: 0 };
+//         }
         
-        if (method === 'IN') {
-            info.inTime = time;
-            map.set(number, info);
-            return;
-        }
+//         if (method === 'IN') {
+//             info.inTime = time;
+//             map.set(number, info);
+//             return;
+//         }
         
-        info.totalTime += calculateTime(info.inTime, time);
-        info.inTime = null;
+//         info.totalTime += calculateTime(info.inTime, time);
+//         info.inTime = null;
         
-        map.set(number, info);
-    });
+//         map.set(number, info);
+//     });
     
-    return [...map.keys()].sort((k1, k2) => k1 - k2).map(key => {
-        const info = map.get(key);
+//     return [...map.keys()].sort((k1, k2) => k1 - k2).map(key => {
+//         const info = map.get(key);
         
-        if (info.inTime) {
-            info.totalTime += calculateTime(info.inTime, '23:59');
+//         if (info.inTime) {
+//             info.totalTime += calculateTime(info.inTime, '23:59');
+//         }
+        
+//         let totalFee = 0;
+//         let totalTime = info.totalTime;
+        
+//         totalFee += basicFee;
+//         totalTime -= basicTime;
+        
+//         if (totalTime > 0) {
+//             totalFee += (Math.ceil(totalTime / unitTime) * unitFee);
+//         }
+        
+//         return totalFee;
+//     });
+// }
+
+
+// 코딩테스트 연습 > 2022 KAKAO TECH INTERNSHIP > 두 큐 합 같게 만들기
+function solution(queue1, queue2) {
+    const allQueue = [...queue1, ...queue2];
+    
+    let maxNum = 0;
+    let currentNum = 0;
+    
+    const goalNum = allQueue.reduce((acc, cur, index) => {
+        if (cur > maxNum) {
+            maxNum = cur;
         }
         
-        let totalFee = 0;
-        let totalTime = info.totalTime;
-        
-        totalFee += basicFee;
-        totalTime -= basicTime;
-        
-        if (totalTime > 0) {
-            totalFee += (Math.ceil(totalTime / unitTime) * unitFee);
+        if (index < queue1.length) {
+            currentNum += cur;
         }
         
-        return totalFee;
-    });
+        return acc + cur;
+    }, 0) / 2;
+    
+    // 전체 합이 홀수인 경우, array 에서 최고 높은 수가 목표 합보다 큰 경우
+    // 요 경우는 두 큐의 합이 같을 수가 없음
+    if (!Number.isInteger(goalNum) || maxNum > goalNum) {
+        return -1;
+    }
+    
+    // queue1, queue2 를 합친 array 에서 조건에 맞는 영역 - 합이 goalNum 인 영역을 찾는단 느낌으로...
+    // queue1 영역부터 시작
+    let startIndex = 0;
+    let lastIndex = queue1.length - 1;
+    let count = 0;
+    
+    while (currentNum !== goalNum) {
+        while (currentNum < goalNum) {
+            lastIndex++;
+            if (lastIndex > allQueue.length - 1) {
+                lastIndex = 0;
+            }
+            
+            currentNum += allQueue[lastIndex];
+            
+            count++;
+        }
+        
+        while (currentNum > goalNum) {
+            currentNum -= allQueue[startIndex];
+            
+            startIndex++;
+            // 전체 array 를 한바퀴 돌았으면, 합이 goalNum 인 영역이 없다는 뜻이므로 -1 return
+            if (startIndex > allQueue.length - 1) {
+                return -1;
+            }
+            
+            count++;
+        }
+    }
+    
+    return count;
 }
